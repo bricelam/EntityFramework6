@@ -2,12 +2,19 @@
 
 namespace System.Data.Entity.Core.Common
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Data.Common;
+    using System.Data.Entity.Core.EntityClient;
+    using System.Data.Entity.Core.Mapping;
     using System.Data.Entity.Core.Metadata.Edm;
     using System.Data.Entity.Resources;
+    using System.Data.Entity.Schema;
     using System.Data.Entity.Utilities;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using System.Globalization;
+    using System.Linq;
     using System.Xml;
 
     /// <summary>
@@ -147,7 +154,11 @@ namespace System.Data.Entity.Core.Common
         /// </summary>
         /// <param name="informationType"> The name of the information to be retrieved. </param>
         /// <returns> An XmlReader at the begining of the information requested. </returns>
-        protected abstract XmlReader GetDbInformation(string informationType);
+        protected virtual XmlReader GetDbInformation(string informationType)
+        {
+            // TODO: Encourage implementors to override GetStoreSchema
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         ///     Gets framework and provider specific information
@@ -189,6 +200,17 @@ namespace System.Data.Entity.Core.Common
             return reader;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public virtual SchemaInformation GetStoreSchema(DbConnection connection)
+        {
+            Contract.Requires(connection != null);
+
+            var workspace = GetProviderSchemaMetadataWorkspace(connection);
+            var storeSchemaConnection = new EntityConnection(workspace, connection);
+
+            return new LegacySchemaInformation(storeSchemaConnection);
+        }
+
         /// <summary>
         ///     Does the provider support escaping strings to be used as patterns in a Like expression.
         ///     If the provider overrides this method to return true, <cref = "EscapeLikeArgument" /> should 
@@ -214,6 +236,120 @@ namespace System.Data.Entity.Core.Common
             Contract.Requires(argument != null);
 
             throw new ProviderIncompatibleException(Strings.ProviderShouldOverrideEscapeLikeArgument);
+        }
+
+        private MetadataWorkspace GetProviderSchemaMetadataWorkspace(DbConnection providerConnection)
+        {
+            Contract.Requires(providerConnection != null);
+
+            // TODO: Fallback to previous versions
+            return GetProviderSchemaMetadataWorkspace(
+                providerConnection,
+                ConceptualSchemaDefinitionVersion3,
+                StoreSchemaDefinitionVersion3,
+                StoreSchemaMappingVersion3);
+    }
+
+        private MetadataWorkspace GetProviderSchemaMetadataWorkspace(
+            DbConnection providerConnection, string csdlName, string ssdlName, string mslName)
+        {
+            Contract.Requires(providerConnection != null);
+            Contract.Requires(!string.IsNullOrWhiteSpace(csdlName));
+            Contract.Requires(!string.IsNullOrWhiteSpace(ssdlName));
+            Contract.Requires(!string.IsNullOrWhiteSpace(mslName));
+
+            const string DbProviderServicesInformationLocationPath = "DbProviderServices://{0}/{1}";
+
+            try
+            {
+                var workspace = new MetadataWorkspace();
+
+                StoreItemCollection storeItemCollection;
+                using (var ssdl = GetInformation(ssdlName))
+                {
+                    var ssdlLocation = string.Format(                        
+                        CultureInfo.InvariantCulture,
+                        DbProviderServicesInformationLocationPath,
+                        providerConnection.GetType().Name,
+                        ssdlName);
+
+                    storeItemCollection = new StoreItemCollection(new[] { ssdl }, new[] { ssdlLocation });
+                    workspace.RegisterItemCollection(storeItemCollection);
+                }
+
+                EdmItemCollection edmItemCollection;
+                using (var csdl = GetInformation(csdlName))
+                {
+                    var csdlLocation = string.Format(
+                        CultureInfo.InvariantCulture,
+                        DbProviderServicesInformationLocationPath,
+                        typeof(DbProviderServices).Name,
+                        csdlName);
+
+                    edmItemCollection = new EdmItemCollection(new[] { csdl }, new[] { csdlLocation });
+                    workspace.RegisterItemCollection(edmItemCollection);
+                }
+
+                using (var msl = GetInformation(mslName))
+                {
+                    var mslLocation = string.Format(
+                        CultureInfo.InvariantCulture,
+                        DbProviderServicesInformationLocationPath,
+                        providerConnection.GetType().Name,
+                        StoreSchemaMapping);
+
+                    IList<EdmSchemaError> errors;
+                    var mappingItemCollection = new StorageMappingItemCollection(
+                        edmItemCollection,
+                        storeItemCollection,
+                        new[] { msl },
+                        new List<string> { mslLocation },
+                        out errors);
+                    ThrowOnError(errors);
+                    workspace.RegisterItemCollection(mappingItemCollection);
+                }
+
+                // Make the views generate here so we can wrap the provider schema problems in a
+                // ProviderIncompatibleException
+                ForceViewGeneration(workspace);
+
+                return workspace;
+            }
+            catch (Exception ex)
+            {
+                if (!ex.IsCatchableExceptionType()
+                    || ex is ProviderIncompatibleException)
+                {
+                    throw;
+                }
+
+                throw new ProviderIncompatibleException(Strings.ProviderSchemaErrors, ex);
+            }
+        }
+
+        private static void ThrowOnError(IEnumerable<EdmSchemaError> errors)
+        {
+            Contract.Requires(errors != null);
+
+            if (errors.Any(e => e.Severity == EdmSchemaErrorSeverity.Error))
+            {
+                throw new ProviderIncompatibleException(
+                    Strings.ProviderSchemaErrors,
+                    EntityUtil.InvalidSchemaEncountered(
+                        string.Join(
+                            Environment.NewLine,
+                            errors.Select(e => e.ToString()))));
+            }
+        }
+
+        private static void ForceViewGeneration(MetadataWorkspace workspace)
+        {
+            Contract.Requires(workspace != null);
+
+            var containers = workspace.GetItems<EntityContainer>(DataSpace.SSpace);
+            Contract.Assert(containers.Count != 0, "No s-space containers found");
+            Contract.Assert(containers[0].BaseEntitySets.Count != 0, "No entity sets in the s-space container");
+            workspace.GetCqtView(containers[0].BaseEntitySets[0]);
         }
     }
 

@@ -13404,6 +13404,14 @@ namespace System.Data.Entity.Resources
         {
             get { return EntityRes.GetString(EntityRes.UnableToAutoMigrateDefaultSchema); }
         }
+
+        /// <summary>
+        /// A string like "The provider returned schema mapping information that is not valid."
+        /// </summary>
+        internal static string ProviderSchemaErrors
+        {
+            get { return EntityRes.GetString(EntityRes.ProviderSchemaErrors); }
+        }
     } 
 
     /// <summary>
@@ -16694,6 +16702,7 @@ namespace System.Data.Entity.Resources
         internal const string IQueryable_Provider_Not_Async = "IQueryable_Provider_Not_Async";
         internal const string EmptySequence = "EmptySequence";
         internal const string UnableToAutoMigrateDefaultSchema = "UnableToAutoMigrateDefaultSchema";
+        internal const string ProviderSchemaErrors = "ProviderSchemaErrors";
         
         static EntityRes loader = null;
         ResourceManager resources;

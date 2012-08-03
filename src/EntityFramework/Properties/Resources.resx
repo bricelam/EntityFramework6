@@ -5335,4 +5335,7 @@
     <value>Auto-migrating default schema changes is not supported. Please use code-based migrations to migrate default schema changes.</value>
     <comment>## ExceptionType=Migrations.Infrastructure.MigrationsException</comment>
   </data>
+  <data name="ProviderSchemaErrors" xml:space="preserve">
+    <value>The provider returned schema mapping information that is not valid.</value>
+  </data>
 </root>
