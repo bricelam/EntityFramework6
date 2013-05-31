@@ -209,6 +209,16 @@ namespace System.Data.Entity.Core.Common.CommandTrees.Internal
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
             MessageId = "System.Data.Entity.Core.Common.Utils.TreeNode.#ctor(System.String,System.Data.Entity.Core.Common.Utils.TreeNode[])"
             )]
+        internal string Print(DbExpression expression)
+        {
+            DebugCheck.NotNull(expression);
+
+            return Print(new TreeNode("Expression", _visitor.VisitExpression(expression)));
+        }
+
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
+            MessageId = "System.Data.Entity.Core.Common.Utils.TreeNode.#ctor(System.String,System.Data.Entity.Core.Common.Utils.TreeNode[])"
+            )]
         private static TreeNode CreateParametersNode(DbCommandTree tree)
         {
             var retNode = new TreeNode("Parameters");
