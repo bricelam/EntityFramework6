@@ -18,6 +18,9 @@
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\FinalPublicKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -103,6 +106,7 @@
     <Import Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Query\LinqToEntities\QueryExpressionSyntaxTests.vb" />
     <Compile Include="TemplateTests.vb" />
     <Compile Include="VbAdvancedPatterns\AddressMf.vb">
       <DependentUpon>VbAdvancedPatterns.tt</DependentUpon>
