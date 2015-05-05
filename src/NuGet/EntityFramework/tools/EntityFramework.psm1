@@ -1003,7 +1003,7 @@ function Get-PackageInstallPath($package)
     $componentModel = Get-VsComponentModel
     $packageInstallerServices = $componentModel.GetService([NuGet.VisualStudio.IVsPackageInstallerServices])
 
-    $vsPackage = $packageInstallerServices.GetInstalledPackages() | ?{ $_.Id -eq $package.Id -and $_.Version -eq $package.Version }
+    $vsPackage = $packageInstallerServices.GetInstalledPackages() | ?{ $_.Id -eq $package.Id -and $_.Version -eq $package.Version } | select -First 1
     
     return $vsPackage.InstallPath
 }
