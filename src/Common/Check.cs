@@ -2,8 +2,6 @@
 
 #if SQLSERVER
 namespace System.Data.Entity.SqlServer.Utilities
-#elif SQLSERVERCOMPACT
-namespace System.Data.Entity.SqlServerCompact.Utilities
 #else
 namespace System.Data.Entity.Utilities
 #endif

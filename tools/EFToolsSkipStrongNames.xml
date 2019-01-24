@@ -3,7 +3,6 @@
 
   <assembly name="EntityFramework" publicKeyToken="b77a5c561934e089" />
   <assembly name="EntityFramework.SqlServer" publicKeyToken="b77a5c561934e089" />
-  <assembly name="EntityFramework.SqlServerCompact" publicKeyToken="b77a5c561934e089" />
 
   <assembly name="Microsoft.Data.Entity.Design.BootstrapPackage" />
   <assembly name="Microsoft.Data.Entity.Design.DatabaseGeneration" />

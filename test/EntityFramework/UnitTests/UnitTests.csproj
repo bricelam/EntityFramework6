@@ -78,6 +78,10 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework.SqlServerCompact">
+      <Private>True</Private>
+      <HintPath>..\..\..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net40\EntityFramework.SqlServerCompact.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -844,10 +848,6 @@
       <Project>{1F3817E9-8070-4429-B134-9674698DD78C}</Project>
       <Name>EntityFramework.PowerShell</Name>
       <Aliases>global</Aliases>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\EntityFramework.SqlServerCompact\EntityFramework.SqlServerCompact.csproj">
-      <Project>{1ef9c524-7122-4677-b111-dd14bb2a9ea2}</Project>
-      <Name>EntityFramework.SqlServerCompact</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\EntityFramework.SqlServer\EntityFramework.SqlServer.csproj">
       <Project>{6f4bb80b-5f74-44d3-a77f-0025dfa48c1a}</Project>
