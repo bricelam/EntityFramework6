@@ -14,6 +14,7 @@ namespace System.Data.Entity.CodeFirst
         [Fact] // CodePlex 583
         public void Subclasses_with_different_properties_to_same_column_using_TPH_can_round_trip()
         {
+            Diagnostics.Debugger.Launch();
             using (var context = new FunctionalTests.InheritanceScenarioTests.TphPersonContext())
             {
                 Assert.Equal("N/A", context.People.OfType<FunctionalTests.InheritanceScenarioTests.Student>().Single(p => p.Name == "Jesse").Career);

@@ -1,7 +1,10 @@
 <Project>
   <!-- HACK: Our test projects don't match Arcade's conventions -->
   <PropertyGroup>
-    <IsUnitTestProject>True</IsUnitTestProject>
+    <!-- DEBUG -->
+    <IsUnitTestProject>False</IsUnitTestProject>
+    <IsUnitTestProject Condition="'$(MSBuildProjectName)' == 'FunctionalTests.ProviderAgnostic'">True</IsUnitTestProject>
+    <TestTargetFrameworks>netcoreapp3.0</TestTargetFrameworks>
   </PropertyGroup>
 
   <Import Project="..\Directory.Build.props" />
