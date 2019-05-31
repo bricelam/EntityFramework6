@@ -22,7 +22,9 @@ namespace System.Data.Entity.Migrations.History
     using Xunit;
 
     [Variant(DatabaseProvider.SqlClient, ProgrammingLanguage.CSharp)]
+#if NET452
     [Variant(DatabaseProvider.SqlServerCe, ProgrammingLanguage.CSharp)]
+#endif
     public class HistoryRepositoryTests : DbTestCase
     {
         public HistoryRepositoryTests(DatabaseProviderFixture databaseProviderFixture)

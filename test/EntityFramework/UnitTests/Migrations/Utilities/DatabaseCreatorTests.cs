@@ -5,7 +5,9 @@ namespace System.Data.Entity.Migrations.Utilities
     using Xunit;
 
     [Variant(DatabaseProvider.SqlClient, ProgrammingLanguage.CSharp)]
+#if NET452
     [Variant(DatabaseProvider.SqlServerCe, ProgrammingLanguage.CSharp)]
+#endif
     public class DatabaseCreatorTests : DbTestCase
     {
         public DatabaseCreatorTests(DatabaseProviderFixture databaseProviderFixture)

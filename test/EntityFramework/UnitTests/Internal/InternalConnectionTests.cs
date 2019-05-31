@@ -8,10 +8,13 @@ namespace System.Data.Entity.Internal
     using System.Data.Entity.Infrastructure.Interception;
     using System.Data.Entity.Resources;
     using System.Data.SqlClient;
-    using System.Data.SqlServerCe;
     using Moq;
     using Moq.Protected;
     using Xunit;
+
+#if NET452
+    using System.Data.SqlServerCe;
+#endif
 
     /// <summary>
     /// Tests for creating and managing connections using IInternalConnection.
@@ -658,6 +661,7 @@ namespace System.Data.Entity.Internal
             }
         }
 
+#if NET452
         [Fact]
         public void LazyInternalConnection_can_create_connection_from_DbConnectionInfo_from_config_file()
         {
@@ -671,6 +675,7 @@ namespace System.Data.Entity.Internal
                 Assert.Equal(DbConnectionStringOrigin.DbContextInfo, connection.ConnectionStringOrigin);
             }
         }
+#endif
 
         [Fact]
         public void LazyInternalConnection_throws_when_cant_find_connection_from_DbConnectionInfo_in_config_file()

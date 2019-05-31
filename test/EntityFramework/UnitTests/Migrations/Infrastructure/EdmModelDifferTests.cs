@@ -27,7 +27,9 @@ namespace System.Data.Entity.Migrations.Infrastructure
     using Order = System.Data.Entity.Migrations.Order;
 
     [Variant(DatabaseProvider.SqlClient, ProgrammingLanguage.CSharp)]
+#if NET452
     [Variant(DatabaseProvider.SqlServerCe, ProgrammingLanguage.CSharp)]
+#endif
     public class EdmModelDifferTests : DbTestCase
     {
         public EdmModelDifferTests(DatabaseProviderFixture databaseProviderFixture)
@@ -978,7 +980,7 @@ namespace System.Data.Entity.Migrations.Infrastructure
                     .Single(c => c.Name == "Type");
 
             Assert.Equal(
-                DatabaseProvider != DatabaseProvider.SqlServerCe
+                !IsSqlCe
                     ? (int?)null
                     : 4000,
                 typeColumn.MaxLength);
@@ -2307,7 +2309,7 @@ namespace System.Data.Entity.Migrations.Infrastructure
 
             Assert.Equal(25, alterColumnOperation.Column.MaxLength);
 
-            if (DatabaseProvider != DatabaseProvider.SqlServerCe)
+            if (!IsSqlCe)
             {
                 Assert.Equal(false, alterColumnOperation.Column.IsUnicode);
             }
@@ -2318,7 +2320,7 @@ namespace System.Data.Entity.Migrations.Infrastructure
             Assert.Equal("FullName", inverseAlterColumnOperation.Column.Name);
 
             Assert.Equal(
-                DatabaseProvider != DatabaseProvider.SqlServerCe
+                !IsSqlCe
                     ? (int?)null
                     : 4000,
                 inverseAlterColumnOperation.Column.MaxLength);

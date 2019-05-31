@@ -11,10 +11,12 @@ namespace System.Data.Entity
 
     public class AssemblyTests : TestBase
     {
+#if NET452
         public static Assembly EntityFrameworkSqlServerCompactAssembly
         {
             get { return typeof(SqlCeProviderServices).Assembly(); }
         }
+#endif
 
         [Fact]
         public void EntityFramework_assembly_is_CLSCompliant()

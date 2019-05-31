@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
+#if NET452
+
 namespace System.Data.Entity.SqlServerCompact
 {
     using System.Data.Entity.SqlServerCompact.Resources;
@@ -750,3 +752,5 @@ WHERE (([MigrationId] = N'House Lannister') AND ([ContextKey] = N'The pointy end
         }
     }
 }
+
+#endif

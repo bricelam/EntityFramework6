@@ -9,7 +9,9 @@ namespace System.Data.Entity.Migrations
     using Xunit;
 
     [Variant(DatabaseProvider.SqlClient, ProgrammingLanguage.CSharp)]
+#if NET452
     [Variant(DatabaseProvider.SqlServerCe, ProgrammingLanguage.CSharp)]
+#endif
     public class DbSetMigrationsExtensionsTests : DbTestCase
     {
         public DbSetMigrationsExtensionsTests(DatabaseProviderFixture databaseProviderFixture)

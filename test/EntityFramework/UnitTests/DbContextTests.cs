@@ -28,7 +28,6 @@ namespace ProductivityApiUnitTests
     using System.Data.Entity.Resources;
     using System.Data.Entity.TestHelpers;
     using System.Data.SqlClient;
-    using System.Data.SqlServerCe;
     using System.Linq;
     using Moq;
     using Moq.Protected;
@@ -36,6 +35,10 @@ namespace ProductivityApiUnitTests
     using System.Data.Entity.Core.Metadata.Edm;
     using System.Security;
     using System.Threading;
+
+#if NET452
+    using System.Data.SqlServerCe;
+#endif
 
     #region Context types for testing database name generation
 
@@ -733,6 +736,7 @@ END");
             }
         }
 
+#if NET452
         [Fact]
         public void Can_replace_connection_with_different_provider()
         {
@@ -762,6 +766,7 @@ END");
                 }
             }
         }
+#endif
 
         [Fact]
         public void Exception_replacing_DbConnection_with_EntityConnection()

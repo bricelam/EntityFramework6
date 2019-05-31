@@ -13,12 +13,15 @@ namespace System.Data.Entity.SqlServer
     using System.Data.Entity.SqlServer.Resources;
     using System.Data.Entity.Utilities;
     using System.Data.SqlClient;
-    using System.Data.SqlServerCe;
     using System.Linq;
     using Moq;
     using Moq.Protected;
     using SimpleModel;
     using Xunit;
+
+#if NET452
+    using System.Data.SqlServerCe;
+#endif
 
     public class SqlProviderServicesTests
     {
@@ -37,6 +40,7 @@ namespace System.Data.Entity.SqlServer
                         () => SqlProviderServices.Instance.RegisterInfoMessageHandler(new SqlConnection(), null)).ParamName);
             }
 
+#if NET452
             [Fact]
             public void Throws_when_wrong_connection_type()
             {
@@ -45,6 +49,7 @@ namespace System.Data.Entity.SqlServer
                     Assert.Throws<ArgumentException>(
                         () => SqlProviderServices.Instance.RegisterInfoMessageHandler(new SqlCeConnection(), _ => { })).Message);
             }
+#endif
         }
 
         public class GetDbProviderManifest : TestBase

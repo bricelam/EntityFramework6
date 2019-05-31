@@ -4,7 +4,6 @@ namespace System.Data.Entity.Core.Mapping
 {
     using System.Data.Entity.Core.Metadata.Edm;
     using System.Linq;
-    using System.Runtime.Remoting.Channels;
     using FunctionalTests.Model;
     using Xunit;
     using System.Data.Entity.Resources;
